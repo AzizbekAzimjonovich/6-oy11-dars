@@ -1,24 +1,30 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 
-// Layout
 import MainLayout from "./Layout/MainLayout";
 
-// pgeas
 import Home from "./pages/Home";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import Contact from "./pages/Contact";
+import About from "./pages/About";
 
-// components
 import ProtectedRotes from "./components/ProtectedRotes";
 import Navbar from "./components/Navbar";
 
+import { useContext } from "react";
+import { GlobalContext } from "./context/useGlobalContext";
+
 function App() {
+  const { user } = useContext(GlobalContext);
   const routes = createBrowserRouter([
     {
       path: "/",
       element: (
-        <ProtectedRotes user={true}>
+        <ProtectedRotes user={user}>
           <MainLayout />
         </ProtectedRotes>
       ),
@@ -31,17 +37,22 @@ function App() {
           path: "/contact",
           element: <Contact />,
         },
+        {
+          path: "about",
+          element: <About />,
+        },
       ],
     },
     {
       path: "/signin",
-      element: <Signin />,
+      element: user ? <Navigate to="/" /> : <Signin />,
     },
     {
       path: "/signup",
-      element: <Signup />,
+      element: user ? <Navigate to="/" /> : <Signup />,
     },
   ]);
+
   return <RouterProvider router={routes} />;
 }
 
